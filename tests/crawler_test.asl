@@ -47,10 +47,19 @@
               (and (not (.-is-success fail))
                    (= (.-byte-count succ) 30))))))
 
+(df test-crawl-to-doc [] -> Bool
+  (let [(succ (cr/make-success-result "https://example.com" 200 "<html><head><title>Test Page</title></head><body>Hello world</body></html>"))
+        (doc (cr/crawl-to-doc succ))
+        (asn (cr/crawl-to-asn succ))]
+    (and (= (.-title doc) "Test Page")
+         (and (string-contains? (.-content doc) "Hello world")
+              (string-contains? asn ":doc :title \"Test Page\"")))))
+
 (df run-tests [] -> Bool
   (and (test-googlebot-profile)
        (and (test-chrome-stealth-profile)
             (and (test-browser-candidates)
                  (and (test-cdp-launch-args)
                       (and (test-curl-fetch-args)
-                           (test-crawl-results)))))))
+                           (and (test-crawl-results)
+                                (test-crawl-to-doc))))))))

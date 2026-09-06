@@ -1,0 +1,74 @@
+;; Package Grammar & Exported Symbol Registry (ASN)
+;; @genseam/asl-crawler
+(:grammar
+  :package @genseam/asl-crawler
+  :version "0.1.0"
+  :tokens-baseline 1
+  :symbols [
+    ;; 1-Token Symbols (Baseline)
+    (:sym :name "StealthKind" :kind :type :tokens 1)
+    (:sym :name "StealthProfile" :kind :type :tokens 1)
+    (:sym :name "BrowserKind" :kind :type :tokens 1)
+    (:sym :name "BrowserCandidate" :kind :type :tokens 1)
+    (:sym :name "CrawlJob" :kind :type :tokens 1)
+    (:sym :name "CrawlResult" :kind :type :tokens 1)
+
+    ;; 2-Token Symbols (with :rationale)
+    (:sym :name "stealth-googlebot" :kind :fn :tokens 2
+          :rationale "Constructor tag for official GoogleBot crawler profile")
+    (:sym :name "stealth-chrome" :kind :fn :tokens 2
+          :rationale "Constructor tag for modern Desktop Chrome stealth profile")
+    (:sym :name "stealth-safari" :kind :fn :tokens 2
+          :rationale "Constructor tag for macOS Safari stealth WebKit profile")
+    (:sym :name "stealth-mobile" :kind :fn :tokens 2
+          :rationale "Constructor tag for mobile iOS Safari profile")
+    (:sym :name "make-profile" :kind :fn :tokens 2
+          :rationale "Dispatches profile constructor by StealthKind")
+    (:sym :name "build-headers" :kind :fn :tokens 2
+          :rationale "Compiles stealth profile fields into ordered HTTP headers")
+    (:sym :name "kind-chrome" :kind :fn :tokens 2
+          :rationale "Constructor for Chrome browser variant")
+    (:sym :name "kind-brave" :kind :fn :tokens 2
+          :rationale "Constructor for Brave browser variant")
+    (:sym :name "kind-edge" :kind :fn :tokens 2
+          :rationale "Constructor for Edge browser variant")
+    (:sym :name "kind-safari" :kind :fn :tokens 2
+          :rationale "Constructor for Safari browser variant")
+    (:sym :name "kind-chromium" :kind :fn :tokens 2
+          :rationale "Constructor for Chromium browser variant")
+    (:sym :name "make-candidate" :kind :fn :tokens 2
+          :rationale "Constructs browser candidate descriptor with binary path and OS")
+    (:sym :name "make-crawl-job" :kind :fn :tokens 2
+          :rationale "Constructs crawling task configuration with timeout and redirects")
+    (:sym :name "run-tests" :kind :fn :tokens 2
+          :rationale "Standard test suite execution runner")
+
+    ;; >2 Token Symbols (with :rationale)
+    (:sym :name "make-googlebot-profile" :kind :fn :tokens 3
+          :rationale "Instantiates complete GoogleBot crawler profile")
+    (:sym :name "make-chrome-profile" :kind :fn :tokens 3
+          :rationale "Instantiates modern desktop Chrome anti-fingerprint profile")
+    (:sym :name "make-safari-profile" :kind :fn :tokens 3
+          :rationale "Instantiates modern desktop Safari WebKit profile")
+    (:sym :name "format-curl-header-args" :kind :fn :tokens 4
+          :rationale "Expands HTTP headers into -H command line flag pairs for curl")
+    (:sym :name "get-macos-candidates" :kind :fn :tokens 3
+          :rationale "Returns ordered list of standard macOS browser installation paths")
+    (:sym :name "get-linux-candidates" :kind :fn :tokens 3
+          :rationale "Returns ordered list of standard Linux browser installation paths")
+    (:sym :name "build-cdp-launch-args" :kind :fn :tokens 4
+          :rationale "Constructs Chrome DevTools Protocol process execution argument vector")
+    (:sym :name "make-success-result" :kind :fn :tokens 3
+          :rationale "Constructs successful 2xx crawl response with raw HTML payload")
+    (:sym :name "make-failure-result" :kind :fn :tokens 3
+          :rationale "Constructs failed crawl response with error diagnostic message")
+    (:sym :name "build-curl-fetch-args" :kind :fn :tokens 4
+          :rationale "Constructs safe injection-free curl argument vector with stealth headers")
+    (:sym :name "is-successful-status" :kind :fn :tokens 3
+          :rationale "Predicate checking if HTTP status code is within 2xx range")
+    (:sym :name "crawl-to-doc" :kind :fn :tokens 3
+          :rationale "Extracts structured ExtractedDoc from crawl result using asl-text HTML parser")
+    (:sym :name "crawl-to-asn" :kind :fn :tokens 3
+          :rationale "Serializes crawled HTML payload directly into compact canonical ASN document expression")
+  ])
+

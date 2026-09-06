@@ -2,4 +2,4 @@
  :version "0.1.0"
  :entry "src/crawler.asl"
  :description "Autonomous stealth web crawler, GoogleBot/browser impersonator, and system browser detector in ASL"
- :dependencies [])
+ :dependencies [@genseam/asl-text])

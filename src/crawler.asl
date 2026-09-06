@@ -2,8 +2,10 @@
   :d "Autonomous stealth web crawler pipeline and HTTP fetch command generator in pure ASL."
   :x [CrawlJob CrawlResult
       make-crawl-job make-success-result make-failure-result
-      build-curl-fetch-args is-successful-status]
-  :i [(stealth :a st)])
+      build-curl-fetch-args is-successful-status
+      crawl-to-doc crawl-to-asn]
+  :i [(stealth :a st)
+      (asl-text/text :a txt)])
 
 (dfs CrawlJob
   (:f url Str "Target web page URL")
@@ -60,3 +62,19 @@
                     "--compressed"
                     (.-url job)))]
     (list-append header-args base)))
+
+(df crawl-to-doc [(result CrawlResult)] -> txt/ExtractedDoc
+  :d "Extracts structured ExtractedDoc from crawl result using asl-text HTML parser."
+  (if (.-is-success result)
+      (txt/extract-html (.-raw-html result) (.-url result))
+      (txt/ExtractedDoc
+        :title (.-url result)
+        :content ""
+        :format "error"
+        :source (.-url result)
+        :char-count 0)))
+
+(df crawl-to-asn [(result CrawlResult)] -> Str
+  :d "Serializes crawled HTML payload directly into compact canonical ASN document expression."
+  (let [(doc (crawl-to-doc result))]
+    (txt/doc-to-asn doc)))
