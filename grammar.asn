@@ -12,63 +12,67 @@
     (:sym :name "BrowserCandidate" :kind :type :tokens 1)
     (:sym :name "CrawlJob" :kind :type :tokens 1)
     (:sym :name "CrawlResult" :kind :type :tokens 1)
+    (:sym :name "CrawlPool" :kind :type :tokens 1)
 
-    ;; 2-Token Symbols (with :rationale)
-    (:sym :name "stealth-googlebot" :kind :fn :tokens 2
-          :rationale "Constructor tag for official GoogleBot crawler profile")
-    (:sym :name "stealth-chrome" :kind :fn :tokens 2
-          :rationale "Constructor tag for modern Desktop Chrome stealth profile")
-    (:sym :name "stealth-safari" :kind :fn :tokens 2
-          :rationale "Constructor tag for macOS Safari stealth WebKit profile")
-    (:sym :name "stealth-mobile" :kind :fn :tokens 2
-          :rationale "Constructor tag for mobile iOS Safari profile")
-    (:sym :name "make-profile" :kind :fn :tokens 2
-          :rationale "Dispatches profile constructor by StealthKind")
-    (:sym :name "build-headers" :kind :fn :tokens 2
-          :rationale "Compiles stealth profile fields into ordered HTTP headers")
-    (:sym :name "kind-chrome" :kind :fn :tokens 2
-          :rationale "Constructor for Chrome browser variant")
-    (:sym :name "kind-brave" :kind :fn :tokens 2
-          :rationale "Constructor for Brave browser variant")
-    (:sym :name "kind-edge" :kind :fn :tokens 2
-          :rationale "Constructor for Edge browser variant")
-    (:sym :name "kind-safari" :kind :fn :tokens 2
-          :rationale "Constructor for Safari browser variant")
-    (:sym :name "kind-chromium" :kind :fn :tokens 2
-          :rationale "Constructor for Chromium browser variant")
-    (:sym :name "make-candidate" :kind :fn :tokens 2
-          :rationale "Constructs browser candidate descriptor with binary path and OS")
-    (:sym :name "make-crawl-job" :kind :fn :tokens 2
-          :rationale "Constructs crawling task configuration with timeout and redirects")
-    (:sym :name "run-tests" :kind :fn :tokens 2
-          :rationale "Standard test suite execution runner")
+    ;; 2-Token Symbols (Compact Primary API)
+    (:sym :name "googlebot-profile" :kind :fn :tokens 2)
+    (:sym :name "chrome-profile" :kind :fn :tokens 2)
+    (:sym :name "safari-profile" :kind :fn :tokens 2)
+    (:sym :name "curl-headers" :kind :fn :tokens 2)
+    (:sym :name "macos-browsers" :kind :fn :tokens 2)
+    (:sym :name "linux-browsers" :kind :fn :tokens 2)
+    (:sym :name "cdp-args" :kind :fn :tokens 2)
+    (:sym :name "crawl-ok" :kind :fn :tokens 2)
+    (:sym :name "crawl-err" :kind :fn :tokens 2)
+    (:sym :name "status-ok?" :kind :fn :tokens 2)
+    (:sym :name "curl-args" :kind :fn :tokens 2)
+    (:sym :name "crawl-doc" :kind :fn :tokens 2)
+    (:sym :name "crawl-asn" :kind :fn :tokens 2)
+    (:sym :name "make-pool" :kind :fn :tokens 2)
+    (:sym :name "pool-jobs" :kind :fn :tokens 2)
+    (:sym :name "stealth-googlebot" :kind :fn :tokens 2)
+    (:sym :name "stealth-chrome" :kind :fn :tokens 2)
+    (:sym :name "stealth-safari" :kind :fn :tokens 2)
+    (:sym :name "stealth-mobile" :kind :fn :tokens 2)
+    (:sym :name "make-profile" :kind :fn :tokens 2)
+    (:sym :name "build-headers" :kind :fn :tokens 2)
+    (:sym :name "kind-chrome" :kind :fn :tokens 2)
+    (:sym :name "kind-brave" :kind :fn :tokens 2)
+    (:sym :name "kind-edge" :kind :fn :tokens 2)
+    (:sym :name "kind-safari" :kind :fn :tokens 2)
+    (:sym :name "kind-chromium" :kind :fn :tokens 2)
+    (:sym :name "make-candidate" :kind :fn :tokens 2)
+    (:sym :name "crawl-job" :kind :fn :tokens 2)
+    (:sym :name "run-tests" :kind :fn :tokens 2)
 
-    ;; >2 Token Symbols (with :rationale)
+    ;; >2 Token Legacy Compatibility Aliases (with :rationale)
+    (:sym :name "make-crawl-job" :kind :fn :tokens 3
+          :rationale "Legacy compatibility alias for crawl-job")
     (:sym :name "make-googlebot-profile" :kind :fn :tokens 3
-          :rationale "Instantiates complete GoogleBot crawler profile")
+          :rationale "Legacy compatibility alias for googlebot-profile")
     (:sym :name "make-chrome-profile" :kind :fn :tokens 3
-          :rationale "Instantiates modern desktop Chrome anti-fingerprint profile")
+          :rationale "Legacy compatibility alias for chrome-profile")
     (:sym :name "make-safari-profile" :kind :fn :tokens 3
-          :rationale "Instantiates modern desktop Safari WebKit profile")
+          :rationale "Legacy compatibility alias for safari-profile")
     (:sym :name "format-curl-header-args" :kind :fn :tokens 4
-          :rationale "Expands HTTP headers into -H command line flag pairs for curl")
+          :rationale "Legacy compatibility alias for curl-headers")
     (:sym :name "get-macos-candidates" :kind :fn :tokens 3
-          :rationale "Returns ordered list of standard macOS browser installation paths")
+          :rationale "Legacy compatibility alias for macos-browsers")
     (:sym :name "get-linux-candidates" :kind :fn :tokens 3
-          :rationale "Returns ordered list of standard Linux browser installation paths")
+          :rationale "Legacy compatibility alias for linux-browsers")
     (:sym :name "build-cdp-launch-args" :kind :fn :tokens 4
-          :rationale "Constructs Chrome DevTools Protocol process execution argument vector")
+          :rationale "Legacy compatibility alias for cdp-args")
     (:sym :name "make-success-result" :kind :fn :tokens 3
-          :rationale "Constructs successful 2xx crawl response with raw HTML payload")
+          :rationale "Legacy compatibility alias for crawl-ok")
     (:sym :name "make-failure-result" :kind :fn :tokens 3
-          :rationale "Constructs failed crawl response with error diagnostic message")
+          :rationale "Legacy compatibility alias for crawl-err")
     (:sym :name "build-curl-fetch-args" :kind :fn :tokens 4
-          :rationale "Constructs safe injection-free curl argument vector with stealth headers")
+          :rationale "Legacy compatibility alias for curl-args")
     (:sym :name "is-successful-status" :kind :fn :tokens 3
-          :rationale "Predicate checking if HTTP status code is within 2xx range")
+          :rationale "Legacy compatibility alias for status-ok?")
     (:sym :name "crawl-to-doc" :kind :fn :tokens 3
-          :rationale "Extracts structured ExtractedDoc from crawl result using asl-text HTML parser")
+          :rationale "Legacy compatibility alias for crawl-doc")
     (:sym :name "crawl-to-asn" :kind :fn :tokens 3
-          :rationale "Serializes crawled HTML payload directly into compact canonical ASN document expression")
+          :rationale "Legacy compatibility alias for crawl-asn")
   ])
 

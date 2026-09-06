@@ -2,6 +2,7 @@
   :d "Stealth identity profiles, GoogleBot impersonator, and browser anti-fingerprinting headers in pure ASL."
   :x [StealthKind StealthProfile
       stealth-googlebot stealth-chrome stealth-safari stealth-mobile
+      googlebot-profile chrome-profile safari-profile curl-headers
       make-googlebot-profile make-chrome-profile make-safari-profile make-profile
       build-headers format-curl-header-args]
   :i [])
@@ -91,6 +92,19 @@
     (if (> (string-length ch-ua) 0)
         (list-cons (str "Sec-CH-UA: " ch-ua) base)
         base)))
+
+(df googlebot-profile [] -> StealthProfile
+  (make-googlebot-profile))
+
+(df chrome-profile [] -> StealthProfile
+  (make-chrome-profile))
+
+(df safari-profile [] -> StealthProfile
+  (make-safari-profile))
+
+(df curl-headers [(headers (List Str))] -> (List Str)
+  :d "Expands a list of headers into curl command line flag pairs e.g. -H Header: Val."
+  (format-curl-header-args headers))
 
 (df format-curl-header-args [(headers (List Str))] -> (List Str)
   :d "Expands a list of headers into curl command line flag pairs e.g. -H Header: Val."

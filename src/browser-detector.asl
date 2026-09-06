@@ -2,8 +2,8 @@
   :d "System browser detection and headless automation launcher for Chrome, Brave, Safari, and Chromium."
   :x [BrowserKind BrowserCandidate
       kind-chrome kind-brave kind-edge kind-safari kind-chromium
-      make-candidate get-macos-candidates get-linux-candidates
-      build-cdp-launch-args]
+      make-candidate macos-browsers linux-browsers cdp-args
+      get-macos-candidates get-linux-candidates build-cdp-launch-args]
   :i [])
 
 (dfe BrowserKind
@@ -57,6 +57,18 @@
     (make-candidate "Chromium" "/usr/bin/chromium-browser" (browser-chromium) "linux")
     (make-candidate "Brave" "/usr/bin/brave-browser" (browser-brave) "linux")
     (make-candidate "Chromium Binary" "/usr/bin/chromium" (browser-chromium) "linux")))
+
+(df macos-browsers [] -> (List BrowserCandidate)
+  :d "Returns priority list of standard macOS browser installation paths."
+  (get-macos-candidates))
+
+(df linux-browsers [] -> (List BrowserCandidate)
+  :d "Returns priority list of standard Linux browser installation paths."
+  (get-linux-candidates))
+
+(df cdp-args [(browser BrowserCandidate) (port I64) (url Str) (headless Bool)] -> (List Str)
+  :d "Builds stealth Chrome DevTools Protocol (CDP) process arguments for automated page scraping."
+  (build-cdp-launch-args browser port url headless))
 
 (df build-cdp-launch-args [(browser BrowserCandidate) (port I64) (url Str) (headless Bool)] -> (List Str)
   :d "Builds stealth Chrome DevTools Protocol (CDP) process arguments for automated page scraping."
