@@ -3,7 +3,10 @@
   :x [CrawlJob CrawlResult CrawlPool
       crawl-job make-crawl-job make-pool pool-jobs
       crawl-ok crawl-err status-ok? curl-args crawl-doc crawl-asn
-      make-success-result make-failure-result is-successful-status build-curl-fetch-args]
+      make-success-result make-failure-result is-successful-status build-curl-fetch-args
+      crawl-to-doc crawl-to-asn
+      is-waf-blocked? cache-fallback-jobs strip-cache-decorations
+      normalize-crawl-response crawl-with-fallback]
   :i [(stealth :a st)
       (asl-text/text :a txt)])
 
@@ -123,3 +126,76 @@
 
 (df crawl-to-asn [(result CrawlResult)] -> Str
   (crawl-asn result))
+
+(df is-waf-blocked? [(status-code I64) (body Str)] -> Bool
+  :d "Detects Cloudflare, DataDome, Akamai, or Incapsula challenge pages."
+  (or (and (or (= status-code 403) (= status-code 503))
+           (or (string-contains? body "Just a moment...")
+               (or (string-contains? body "Checking your browser")
+                   (or (string-contains? body "Attention Required! | Cloudflare")
+                       (string-contains? body "cf-chl-bypass")))))
+      (or (= status-code 429)
+          (string-contains? body "Please complete the security check"))))
+
+(df cache-fallback-jobs [(target-url Str)] -> (List CrawlJob)
+  :d "Generates candidate CrawlJobs targeting public web archive mirrors."
+  (list (crawl-job (str "https://web.archive.org/web/" target-url) (st/chrome-profile))
+        (crawl-job (str "https://archive.is/newest/" target-url) (st/chrome-profile))
+        (crawl-job (str "https://webcache.googleusercontent.com/search?q=cache:" target-url) (st/googlebot-profile))))
+
+(df strip-between-markers [(s Str) (start-tag Str) (end-tag Str)] -> Str
+  :d "Strips substring bounded by start-tag and end-tag."
+  (if (and (string-contains? s start-tag)
+           (string-contains? s end-tag))
+      (mt (string-index-of s start-tag)
+        ((some s-idx)
+         (mt (string-index-of s end-tag)
+           ((some e-idx)
+            (if (>= e-idx s-idx)
+                (let [(end-pos (+ e-idx (string-length end-tag)))
+                      (prefix (option-or (string-slice s 0 s-idx) ""))
+                      (suffix (option-or (string-slice s end-pos (string-length s)) ""))]
+                  (str prefix suffix))
+                s))
+           ((none) s)))
+        ((none) s))
+      s))
+
+(df strip-cache-decorations [(html Str)] -> Str
+  :d "Removes Wayback Machine toolbar and Google Cache notice banners from snapshot HTML."
+  (let [(s1 (strip-between-markers html "<!-- BEGIN WAYBACK TOOLBAR INSERT -->" "<!-- END WAYBACK TOOLBAR INSERT -->"))
+        (s2 (strip-between-markers s1 "<div id=\"wm-ipp-base\"" "</div>"))
+        (s3 (strip-between-markers s2 "<div id=\"google-cache-hdr\"" "</div>"))]
+    (string-trim s3)))
+
+(df normalize-crawl-response [(result CrawlResult)] -> CrawlResult
+  :d "Strips injected public cache banners and normalizes raw HTML in CrawlResult."
+  (if (.-is-success result)
+      (let [(cleaned (strip-cache-decorations (.-raw-html result)))]
+        (CrawlResult
+          :url (.-url result)
+          :status-code (.-status-code result)
+          :raw-html cleaned
+          :byte-count (string-length cleaned)
+          :is-success (.-is-success result)
+          :error-msg (.-error-msg result)))
+      result))
+
+(df crawl-with-fallback [(url Str) (primary-result CrawlResult) (fallback-html Str)] -> CrawlResult
+  :d "Falls back to cached snapshot HTML if primary request encountered WAF challenge."
+  (let [(code (if (= (.-status-code primary-result) 0)
+                  (if (string-contains? (.-error-msg primary-result) "403")
+                      403
+                      (if (string-contains? (.-error-msg primary-result) "503")
+                          503
+                          (if (string-contains? (.-error-msg primary-result) "429")
+                              429
+                              0)))
+                  (.-status-code primary-result)))
+        (body (if (> (string-length (.-raw-html primary-result)) 0)
+                  (.-raw-html primary-result)
+                  (.-error-msg primary-result)))]
+    (if (and (not (.-is-success primary-result))
+             (is-waf-blocked? code body))
+        (crawl-ok url 200 (strip-cache-decorations fallback-html))
+        primary-result)))

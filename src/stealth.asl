@@ -4,7 +4,9 @@
       stealth-googlebot stealth-chrome stealth-safari stealth-mobile
       googlebot-profile chrome-profile safari-profile curl-headers
       make-googlebot-profile make-chrome-profile make-safari-profile make-profile
-      build-headers format-curl-header-args]
+      build-headers format-curl-header-args
+      ExtensionRelayMessage ExtensionRelayResponse
+      format-relay-request parse-relay-response]
   :i [])
 
 (dfe StealthKind
@@ -112,3 +114,34 @@
                (list-append acc (list "-H" hdr)))
              (list)
              headers))
+
+(dfs ExtensionRelayMessage
+  (:f action Str "Worker action identifier")
+  (:f url Str "Target request URL")
+  (:f method Str "HTTP method e.g. GET")
+  (:f headers (List Str) "HTTP request headers")
+  (:f body Str "Request payload body"))
+
+(dfs ExtensionRelayResponse
+  (:f status-code I64 "HTTP response status code")
+  (:f headers (List Str) "HTTP response headers")
+  (:f body Str "HTTP response body")
+  (:f success Bool "True if request succeeded with 2xx status"))
+
+(df format-relay-request [(url Str) (method Str) (headers (List Str)) (body Str)] -> ExtensionRelayMessage
+  :d "Formats ExtensionRelayMessage for WebExtension background worker invocation."
+  (ExtensionRelayMessage
+    :action "asl_fetch_relay"
+    :url url
+    :method method
+    :headers headers
+    :body body))
+
+(df parse-relay-response [(status-code I64) (headers (List Str)) (body Str)] -> ExtensionRelayResponse
+  :d "Parses WebExtension background worker fetch response payload."
+  (ExtensionRelayResponse
+    :status-code status-code
+    :headers headers
+    :body body
+    :success (and (>= status-code 200) (< status-code 300))))
+

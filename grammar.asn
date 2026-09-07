@@ -13,6 +13,9 @@
     (:sym :name "CrawlJob" :kind :type :tokens 1)
     (:sym :name "CrawlResult" :kind :type :tokens 1)
     (:sym :name "CrawlPool" :kind :type :tokens 1)
+    (:sym :name "ExtensionRelayMessage" :kind :type :tokens 1)
+    (:sym :name "ExtensionRelayResponse" :kind :type :tokens 1)
+    (:sym :name "CacheProvider" :kind :type :tokens 1)
 
     ;; 2-Token Symbols (Compact Primary API)
     (:sym :name "googlebot-profile" :kind :fn :tokens 2)
@@ -74,5 +77,27 @@
           :rationale "Legacy compatibility alias for crawl-doc")
     (:sym :name "crawl-to-asn" :kind :fn :tokens 3
           :rationale "Legacy compatibility alias for crawl-asn")
+    (:sym :name "format-relay-request" :kind :fn :tokens 3
+          :rationale "Formats ExtensionRelayMessage for WebExtension background worker invocation")
+    (:sym :name "parse-relay-response" :kind :fn :tokens 3
+          :rationale "Parses WebExtension background worker fetch response payload")
+    (:sym :name "is-extension-available?" :kind :fn :tokens 3
+          :rationale "Checks if browser extension background worker port is active and reachable")
+    (:sym :name "make-cache-url" :kind :fn :tokens 3
+          :rationale "Constructs public web cache URL for target origin")
+    (:sym :name "resolve-cache-fallbacks" :kind :fn :tokens 3
+          :rationale "Generates ordered cascade of public cache URLs for fallback failover")
+    (:sym :name "is-cache-hit?" :kind :fn :tokens 3
+          :rationale "Evaluates whether public cache mirror returned a valid archived snapshot")
+    (:sym :name "strip-cache-decorations" :kind :fn :tokens 3
+          :rationale "Removes Wayback Machine toolbar and Google Cache notice banners from snapshot HTML")
+    (:sym :name "is-waf-blocked?" :kind :fn :tokens 3
+          :rationale "Detects Cloudflare, DataDome, Akamai, or Incapsula challenge pages")
+    (:sym :name "cache-fallback-jobs" :kind :fn :tokens 3
+          :rationale "Generates candidate CrawlJobs targeting public web archive mirrors")
+    (:sym :name "normalize-crawl-response" :kind :fn :tokens 3
+          :rationale "Strips injected public cache banners and normalizes raw HTML in CrawlResult")
+    (:sym :name "crawl-with-fallback" :kind :fn :tokens 3
+          :rationale "Falls back to cached snapshot HTML if primary request encountered WAF challenge")
   ])
 
