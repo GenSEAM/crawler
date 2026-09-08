@@ -3,5 +3,5 @@
  :entry "src/crawler.asl"
  :description "Parallel stealth web crawler, GoogleBot/browser impersonator, and system browser detector in ASL"
  :asl-first true
- :dependencies [@genseam/asl-text])
+ :dependencies ["@genseam/asl-text"])
 
