@@ -1,7 +1,7 @@
 ;; Package Grammar & Exported Symbol Registry (ASN)
-;; @genseam/asl-crawler
+;; asl-crawler
 (:grammar
-  :package @genseam/asl-crawler
+  :package asl-crawler
   :version "0.1.0"
   :tokens-baseline 1
   :symbols [
