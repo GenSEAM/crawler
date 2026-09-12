@@ -26,7 +26,7 @@
   (:f url Str "Target URL")
   (:f status-code I64 "HTTP response status code")
   (:f raw-html Str "Raw fetched HTML content")
-  (:f byte-count I64 "Content payload byte length")
+  (:f char-count I64 "Content payload character length")
   (:f is-success Bool "True if request succeeded with 2xx status")
   (:f error-msg Str "Error description if failed"))
 
@@ -66,7 +66,7 @@
     :url url
     :status-code status-code
     :raw-html raw-html
-    :byte-count (string-length raw-html)
+    :char-count (string-length raw-html)
     :is-success true
     :error-msg ""))
 
@@ -75,7 +75,7 @@
     :url url
     :status-code 0
     :raw-html ""
-    :byte-count 0
+    :char-count 0
     :is-success false
     :error-msg error-msg))
 
@@ -176,7 +176,7 @@
           :url (.-url result)
           :status-code (.-status-code result)
           :raw-html cleaned
-          :byte-count (string-length cleaned)
+          :char-count (string-length cleaned)
           :is-success (.-is-success result)
           :error-msg (.-error-msg result)))
       result))

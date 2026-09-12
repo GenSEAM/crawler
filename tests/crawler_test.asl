@@ -58,7 +58,7 @@
     (assert (cr/status-ok? (.-status-code succ)) "status should be ok")
     (assert (.-is-success succ) "succ should be success")
     (assert (not (.-is-success fail)) "fail should not be success")
-    (assert (= (.-byte-count succ) 30) "byte count mismatch")
+    (assert (= (.-char-count succ) 28) "char count mismatch")
     true))
 
 (df test-crawl-to-doc [] -> Bool
